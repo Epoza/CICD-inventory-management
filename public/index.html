@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inventory System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Inventory Manager</h1>
+
+  <div class="inventory-container">
+    <div class="add-item-container">
+      <h2>Add Item</h2>
+      <input id="id" placeholder="ID" type="text" pattern="[a-zA-Z0-9]*" maxlength="8"/> <!-- ID should only be able to contain alphanumeric characters -->
+      <input id="name" placeholder="Name" type="text"/> <!-- name should only contain text -->
+      <input id="quantity" type="number" placeholder="Quantity" min="1" max="1000000"/> <!-- quantity should only be able to contain numbers, and be between 1 and 1 million -->
+      <input id="price" type="number" placeholder="Price" min="1" max="1000000"/> <!-- price should only be able to contain numbers, and be between 1 and 1 million -->
+      <button onclick="addItem()">Add</button>
+    </div>
+
+    <div class="quantity-container">
+      <h2>Update Quantity</h2>
+      <input id="updateId" placeholder="ID" type="text" pattern="[a-zA-Z0-9]*" maxlength="8"/>
+      <input id="updateQty" type="number" placeholder="New Quantity" max="1000000"/>
+      <button onclick="updateItem()">Update</button>
+    </div>
+
+    <div class="remove-item-container">
+      <h2>Remove Item</h2>
+      <input id="removeId" placeholder="ID" type="text" pattern="[a-zA-Z0-9]*" maxlength="8"/>
+      <button onclick="removeItem()">Remove</button>
+    </div>
+
+    <div class="get-item-container">
+      <h2>Get Item</h2>
+      <input id="getId" placeholder="ID" type="text" pattern="[a-zA-Z0-9]*" maxlength="8"/>
+      <button onclick="getItem()">Get</button>
+    </div>
+  </div>
+
+    <pre id="output"></pre>
+
+
+  <script>
+    const API = "http://localhost:3000";
+
+    async function addItem() {
+      const res = await fetch(`${API}/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: document.getElementById("id").value,
+          name: document.getElementById("name").value,
+          quantity: Number(document.getElementById("quantity").value),
+          price: Number(document.getElementById("price").value)
+        })
+      });
+
+      show(await res.json());
+    }
+
+    async function updateItem() {
+      const res = await fetch(`${API}/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: document.getElementById("updateId").value,
+          quantity: Number(document.getElementById("updateQty").value)
+        })
+      });
+
+      show(await res.json());
+    }
+
+    async function removeItem() {
+      const id = document.getElementById("removeId").value;
+
+      const res = await fetch(`${API}/remove/${id}`, {
+        method: "DELETE"
+      });
+
+      show(await res.json());
+    }
+
+    async function getItem() {
+      const id = document.getElementById("getId").value;
+
+      const res = await fetch(`${API}/item/${id}`);
+      show(await res.json());
+    }
+
+    function show(data) {
+      document.getElementById("output").textContent =
+        JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
