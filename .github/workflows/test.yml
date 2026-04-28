@@ -25,3 +25,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Deployment Stage
+        run: echo "Deployment runs."
