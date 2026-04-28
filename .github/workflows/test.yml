@@ -1,4 +1,4 @@
-name: CI Pipeline Test
+name: CI/CD Pipeline
 
 on:
   push:
@@ -16,5 +16,12 @@ jobs:
         with:
           node-version: 24
 
-      - run: npm install
-      - run: npm test
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
